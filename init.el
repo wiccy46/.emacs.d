@@ -57,7 +57,7 @@
 (setq evil-emacs-state-cursor  'hbar) ; _
 
 ;; Theme
-(load-theme 'tango-dark t)
+(load-theme 'gruvbox-dark-medium t)
 
 ;; Line Number
 (when (version<= "26.0.50" emacs-version )
@@ -82,6 +82,12 @@
   :config
   (ivy-mode 1))
 
+
+;; Doom Mode Line
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1)
+  :custom ((doom-modeline-height 16)))
   
 ;; Which Key
 (use-package which-key
