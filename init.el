@@ -4,6 +4,18 @@
 (tooltip-mode    -1)
 (menu-bar-mode   -1)
 
+(defun load-directory (directory)
+  "Load recursively all `.el' files in DIRECTORY."
+  (dolist (element (directory-files-and-attributes directory nil nil nil))
+    (let* ((path (car element))
+           (fullpath (concat directory "/" path))
+           (isdir (car (cdr element)))
+           (ignore-dir (or (string= path ".") (string= path ".."))))
+      (cond
+       ((and (eq isdir t) (not ignore-dir))
+        (load-directory fullpath))
+       ((and (eq isdir nil) (string= (substring path -3) ".el"))
+        (load (file-name-sans-extension fullpath)))))))
 
 ;; Intialize package sources
 (require 'package)
@@ -32,7 +44,6 @@
   (auto-package-update-maybe)
   (auto-package-update-at-time "09:00"))
 
-
 ;; Command log
 (use-package command-log-mode)
 
@@ -45,58 +56,6 @@
   :config
   (evil-mode 1))
 
-;; Set Cursor in Insert mode to bar
-(unless (display-graphic-p)
-	(require 'evil-terminal-cursor-changer)
-	(evil-terminal-cursor-changer-activate) ; or (etcc-on)
-	)
-(setq evil-motion-state-cursor 'box)  ; █
-(setq evil-visual-state-cursor 'box)  ; █
-(setq evil-normal-state-cursor 'box)  ; █
-(setq evil-insert-state-cursor 'bar)  ; ⎸
-(setq evil-emacs-state-cursor  'hbar) ; _
-
-;; theme
-(use-package doom-themes
-  :ensure t
-  :config
-  (setq doom-themes-enabled-bold t
-	doom-themes-enabled-italic t)
-  (load-theme 'doom-opera t)
-  (doom-themes-visual-bell-config)
-  (doom-themes-neotree-config)
-  (doom-themes-org-config))
-
-;; line number
-(when (version<= "26.0.50" emacs-version )
-  (global-display-line-numbers-mode))
-;; Disable on certain modes
-(dolist (mode '(org-mode-hook
-		term-mode-hook
-		eshell-mode-hook))
-  (add-hook mode (lambda() (display-line-numbers-mode 0))))
-
-(use-package ivy
-  :diminish
-  :bind (("C-s" . swiper)
-         :map ivy-minibuffer-map
-         ("TAB" . ivy-alt-done)	
-         ("C-l" . ivy-alt-done)
-         ("C-j" . ivy-next-line)
-         ("C-k" . ivy-previous-line)
-         :map ivy-switch-buffer-map
-         ("C-k" . ivy-previous-line)
-         ("C-l" . ivy-done)
-         ("C-d" . ivy-switch-buffer-kill)
-         :map ivy-reverse-i-search-map
-         ("C-k" . ivy-previous-line)
-         ("C-d" . ivy-reverse-i-search-kill))
-  :config
-  (ivy-mode 1))
-
-(use-package ivy-rich
-  :init
-  (ivy-rich-mode 1))
 
 ;; Doom Mode Line
 (use-package doom-modeline
@@ -118,32 +77,12 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-pacakges (quote (which-key use-pacakge)))
+ '(package-selected-package
+   (quote
+    (evil-magit magit projectile rainbow-delimiters command-log-mode which-key use-package helm gruvbox-theme general evil-terminal-cursor-changer auto-package-update)))
  '(package-selected-packages
    (quote
-    (rainbow-delimiters command-log-mode which-key use-package helm gruvbox-theme general evil-terminal-cursor-changer auto-package-update))))
-
-;; Custom keybinding
-(use-package general
-  :ensure t
-  :config (general-define-key
-  :states '(normal visual insert emacs)
-  :prefix "SPC"
-  :non-normal-prefix "M-SPC"
-  ;; "/"   '(counsel-rg :which-key "ripgrep") ; You'll need counsel package for this
-  "TAB" '(switch-to-prev-buffer :which-key "previous buffer")
-  "SPC" '(helm-M-x :which-key "M-x")
-  "pf"  '(helm-find-file :which-key "find files")
-  ;; Buffers
-  "bb"  '(helm-buffers-list :which-key "buffers list")
-  ;; Window
-  "wl"  '(windmove-right :which-key "move right")
-  "wh"  '(windmove-left :which-key "move left")
-  "wk"  '(windmove-up :which-key "move up")
-  "wj"  '(windmove-down :which-key "move bottom")
-  "w/"  '(split-window-right :which-key "split right")
-  "w-"  '(split-window-below :which-key "split bottom")
-  "wx"  '(delete-window :which-key "delete window")
-))
+    (evil-magit magit counsel with-editor which-key use-package rainbow-delimiters projectile ivy-rich helm gruvbox-theme general evil-terminal-cursor-changer doom-themes doom-modeline command-log-mode auto-package-update))))
 
 
 ;; Org mode
@@ -162,12 +101,4 @@
  (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 
-;; Setup counsel
-(use-package counsel
-  :bind (("M-x" . counsel-M-x)
-	 ("C-x b" . counsel-ibuffer)
-	 ("C-x C-f" . counsel-find-file)
-	 :map minibuffer-local-map
-	 ("C-r" . 'counsel-minibuffer-history))
-  :config
-  (setq ivy-initial-inputs-alist nil))
+(load-directory "~/.emacs.d/conf")
