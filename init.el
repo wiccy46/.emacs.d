@@ -56,14 +56,26 @@
 (setq evil-insert-state-cursor 'bar)  ; ⎸
 (setq evil-emacs-state-cursor  'hbar) ; _
 
-;; Theme
-(load-theme 'gruvbox-dark-medium t)
+;; theme
+(use-package doom-themes
+  :ensure t
+  :config
+  (setq doom-themes-enabled-bold t
+	doom-themes-enabled-italic t)
+  (load-theme 'doom-opera t)
+  (doom-themes-visual-bell-config)
+  (doom-themes-neotree-config)
+  (doom-themes-org-config))
 
-;; Line Number
+;; line number
 (when (version<= "26.0.50" emacs-version )
   (global-display-line-numbers-mode))
+;; Disable on certain modes
+(dolist (mode '(org-mode-hook
+		term-mode-hook
+		eshell-mode-hook))
+  (add-hook mode (lambda() (display-line-numbers-mode 0))))
 
-;; Ivy 
 (use-package ivy
   :diminish
   :bind (("C-s" . swiper)
@@ -82,18 +94,23 @@
   :config
   (ivy-mode 1))
 
+(use-package ivy-rich
+  :init
+  (ivy-rich-mode 1))
 
 ;; Doom Mode Line
 (use-package doom-modeline
   :ensure t
   :init (doom-modeline-mode 1)
   :custom ((doom-modeline-height 16)))
-  
-;; Which Key
+
+;; which key
 (use-package which-key
   :ensure t
-  :init
-  (which-key-mode))
+  :init (which-key-mode)
+  :diminish which-key-mode
+  :config
+  (setq which-key-idle-delay 0.3))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -103,7 +120,7 @@
  '(package-selected-pacakges (quote (which-key use-pacakge)))
  '(package-selected-packages
    (quote
-    (command-log-mode which-key use-package helm gruvbox-theme general evil-terminal-cursor-changer auto-package-update))))
+    (rainbow-delimiters command-log-mode which-key use-package helm gruvbox-theme general evil-terminal-cursor-changer auto-package-update))))
 
 ;; Custom keybinding
 (use-package general
@@ -140,3 +157,17 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+;; Rainbow delimiter, easy to to see ()
+ (use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
+
+;; Setup counsel
+(use-package counsel
+  :bind (("M-x" . counsel-M-x)
+	 ("C-x b" . counsel-ibuffer)
+	 ("C-x C-f" . counsel-find-file)
+	 :map minibuffer-local-map
+	 ("C-r" . 'counsel-minibuffer-history))
+  :config
+  (setq ivy-initial-inputs-alist nil))
