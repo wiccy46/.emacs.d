@@ -1,11 +1,14 @@
 recentf
 #init.el#
+init.el~
+network-security.data
+.last-package-update-day
 
 
 elpa/
+auto-save-list/
 /.org-id-locations
 /ac-comphist.dat
-/auto-save-list
 /custom.el
 /image-dired/
 /oauth2.plstore
