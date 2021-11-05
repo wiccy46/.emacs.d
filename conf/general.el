@@ -9,6 +9,8 @@
   "TAB" '(switch-to-prev-buffer :which-key "previous buffer")
   "SPC" '(helm-M-x :which-key "M-x")
   "p"   '(projectile-command-map :which-key "projectile")
+  ;; Tree
+  "e"   '(neotree-toggle :which-key "Neotree")
   ;; Window
   "wl"  '(windmove-right :which-key "move right")
   "wh"  '(windmove-left :which-key "move left")
