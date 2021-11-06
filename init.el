@@ -85,9 +85,6 @@
     (neotree evil-magit magit counsel with-editor which-key use-package rainbow-delimiters projectile ivy-rich helm gruvbox-theme general evil-terminal-cursor-changer doom-themes doom-modeline command-log-mode auto-package-update))))
 
 
-;; Org mode
-(require 'org)
-
 ;; Enbale Mouse
 (xterm-mouse-mode 1)
 (custom-set-faces
@@ -102,3 +99,4 @@
   :hook (prog-mode . rainbow-delimiters-mode))
 
 (load-directory "~/.emacs.d/conf")
+
