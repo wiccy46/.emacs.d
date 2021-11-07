@@ -46,6 +46,4 @@
 
 (use-package yaml-mode
   :straight t
-  :config
-  (set lsp-yaml-format-enable t)
   :hook (yaml-mode . lsp))
