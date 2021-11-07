@@ -1,9 +1,13 @@
-;;; Package --- Summary 
+;;; Package --- Summary
 ;; Minimal UI
-(scroll-bar-mode -1)
+;;(scroll-bar-mode -1)
+(menu-bar-mode 1)
 (tool-bar-mode   -1)
-(tooltip-mode    -1)
-(menu-bar-mode   -1)
+(tab-line-mode 1)
+;;(tooltip-mode    -1)
+;;(menu-bar-mode   -1)
+
+(setq-default explicit-shell-file-name "/bin/zsh")
 
 (defun load-directory (directory)
   "Load recursively all `.el' files in DIRECTORY."
@@ -42,6 +46,10 @@
 (straight-use-package 'use-package)
 
 (package-initialize)
+
+(when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize))
+
 (unless package-archive-contents
   (package-refresh-contents))
 
@@ -120,3 +128,8 @@
 (setq make-backup-files nil)
 
 (load-directory "~/.emacs.d/conf")
+
+;; Font Size
+(set-face-attribute 'default nil :height 140)
+
+(tab-line-mode 1)
