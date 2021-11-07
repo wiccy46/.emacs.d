@@ -2,26 +2,33 @@
   (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
   (lsp-headerline-breadcrumb-mode))
 
+
 (use-package lsp-mode
-  :commands (lsp lsp-deferred)
-  :hook (lsp-mode . efs/lsp-mode-setup)
+  :straight t
   :init
-  (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
+  (setq lsp-imenu-index-symbol-kinds
+   '(Class Method Constructor Enum Interface Function Struct))
   :config
-  (lsp-enable-which-key-integration t)
-  (define-key lsp-mode-map (kbd "C-c l") lsp-command-map))
+  (define-key lsp-mode-map (kbd "C-l") lsp-command-map)
+  (define-key lsp-mode-map (kbd "C-c C-o") 'lsp-find-definition))
 
 
-
-;; optionally
 (use-package lsp-ui
-  :hook (lsp-mode . lsp-ui-mode)
-  :custom
-  (lsp-ui-doc-position 'bottom))
+  :straight t
+  :config
+  (setq lsp-ui-sideline-show-hover t)
+  (setq lsp-ui-sideline-show-diagnostics t)
+  (setq lsp-ui-sideline-show-code-actions t)
+  (setq lsp-ui-peek-enable nil)
+  (setq lsp-ui-doc-enable nil))
 
 ;; Ivy
 (use-package lsp-ivy)
-(use-package lsp-treemacs :after lsp)
+(use-package lsp-treemacs
+  :straight t
+  :after lsp
+  :config
+  (lsp-treemacs-sync-mode 1))
 
 ;; optionally if you want to use debugger
 (use-package dap-mode)
@@ -34,3 +41,11 @@
   :hook (typescript-mode . lsp-deferred)
   :config
   (setq typescript-indent-level 2))
+
+(use-package protobuf-mode :straight t)
+
+(use-package yaml-mode
+  :straight t
+  :config
+  (set lsp-yaml-format-enable t)
+  :hook (yaml-mode . lsp))

@@ -25,11 +25,27 @@
                          ("org" . "https://orgmode.org/elpa/")
                          ("elpa" . "https://elpa.gnu.org/packages/")))
 
+;; Install straight.el
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+(straight-use-package 'use-package)
+
 (package-initialize)
 (unless package-archive-contents
   (package-refresh-contents))
 
-  ;; Initialize use-package on non-Linux platforms
+;; Initialize use-package on non-Linux platforms
 (unless (package-installed-p 'use-package)
   (package-install 'use-package))
 
@@ -51,12 +67,6 @@
 ;; Make ESC quit prompts
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
-;; Vim mode
-(use-package evil
-  :ensure t
-  :config
-  (evil-mode 1))
-
 
 ;; Doom Mode Line
 (use-package doom-modeline
@@ -77,13 +87,11 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-pacakges (quote (which-key use-pacakge)))
+ '(package-selected-pacakges '(which-key use-pacakge))
  '(package-selected-package
-   (quote
-    (evil-magit magit projectile rainbow-delimiters command-log-mode which-key use-package gruvbox-theme general evil-terminal-cursor-changer auto-package-update)))
+   '(evil-magit magit projectile rainbow-delimiters command-log-mode which-key use-package gruvbox-theme general evil-terminal-cursor-changer auto-package-update))
  '(package-selected-packages
-   (quote
-    (flycheck neotree evil-magit magit counsel with-editor which-key use-package rainbow-delimiters projectile ivy-rich gruvbox-theme general evil-terminal-cursor-changer doom-themes doom-modeline command-log-mode auto-package-update))))
+   '(flycheck neotree evil-magit magit counsel with-editor which-key use-package rainbow-delimiters projectile ivy-rich gruvbox-theme general evil-terminal-cursor-changer doom-themes doom-modeline command-log-mode auto-package-update)))
 
 
 ;; Enbale Mouse
@@ -102,7 +110,13 @@
 ;; Code error checking
 (use-package flycheck
   :ensure t
-  :init (global-flycheck-mode t))
+  :init (global-flycheck-mode t)
+  :config
+    (setq flycheck-check-syntax-automatically '(save mode-enable))
+    ;; the default value was '(save idle-change new-line mode-enabled)
+  )
 
+;; Stop Creating ~ file
+(setq make-backup-files nil)
 
 (load-directory "~/.emacs.d/conf")

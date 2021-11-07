@@ -6,6 +6,8 @@ recentf
 init.el~
 network-security.data
 .last-package-update-day
+straight/
+.lsp-session*
 
 
 elpa/
