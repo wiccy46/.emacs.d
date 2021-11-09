@@ -5,4 +5,7 @@
   (evil-mode 1))
 
 ;; Use VIM stle gcc commentary
-(use-package evil-commentary)
+(use-package evil-commentary
+  :ensure t
+  :config
+  (evil-commentary-mode))
